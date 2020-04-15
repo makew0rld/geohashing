@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import datetime
 import requests
 from hashlib import md5
@@ -115,7 +117,6 @@ if args["30w"] in ["e", "east"]:
     args["30w"] = True
 elif args["30w"] in ["w", "west"]:
     args["30w"] = False
-
 
 if args["global"]:
     lat, lon = globalhash(args["date"], args["dow_jones"])
