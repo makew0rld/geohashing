@@ -93,17 +93,25 @@ def globalhash(date=None, dow_jones=None):
     lon = lon * 360 - 180
     return lat, lon
 
+def replace_tenths(dst, src):
+    """Replace tenths place in dst with that from src"""
+
+    new_tenths = int(abs(src) * 10) % 10
+    old_tenths = int(abs(dst) * 10) % 10
+    dst = str(dst)
+    return float(dst.replace(f'.{old_tenths}', f'.{new_tenths}'))
 
 # TODO: Support finding in nearby graticules
 
 parser = argparse.ArgumentParser(description="Calculate geohashes as defined by Randall Munroe in xkcd #426.")
-parser.add_argument("latitude", type=int)
-parser.add_argument("longitude", type=int)
+parser.add_argument("latitude", type=float)
+parser.add_argument("longitude", type=float)
 parser.add_argument("-d", "--date", help="The geohash date in YYYY-MM-DD format. The current date is used otherwise.")
 parser.add_argument("-j", "--dow-jones", "--dj", type=float, help="The Dow Jones value, with two decimal places. The most recent compilant open value is used otherwise")
 parser.add_argument("--30w", choices=("e", "w", "east", "west"), help="Override automatic 30W detection, forcing either east or west.")
 parser.add_argument("-g", "--global", action="store_true", help="Calculate the globalhash instead. Lat and lon are ignored.")
 parser.add_argument("-s", "--simple", action="store_true", help="Only return lat and lon, separated by a newline.")
+parser.add_argument("--centicule", action="store_true", help="Calculate the centicule instead.")
 args = vars(parser.parse_args())
 
 # Checks
@@ -122,6 +130,11 @@ if args["global"]:
     lat, lon = globalhash(args["date"], args["dow_jones"])
 else:
     lat, lon = geohash(args["latitude"], args["longitude"], args["date"], args["dow_jones"], args["30w"])
+
+if args["centicule"]:
+    # See https://geohashing.site/geohashing/Centicule
+    lat = replace_tenths(lat, args["latitude"])
+    lon = replace_tenths(lon, args["longitude"])
 
 if args["simple"]:
     print(str(lat) + "\n" + str(lon))
