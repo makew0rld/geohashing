@@ -5,6 +5,7 @@ import requests
 from hashlib import md5
 import sys
 import argparse
+import webbrowser
 
 # Websites that return the Dow Jones index in plain text
 # The date can be appended to the URL in this format: %Y/%m/%d
