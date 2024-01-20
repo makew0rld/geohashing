@@ -41,7 +41,7 @@ def get_dow_jones(east=False, date=None):
     raise Exception("None of the programmed Dow Jones sources are online, or no data exists for your date yet.\nTry providing one manually.")
 
 
-def get_hash(east=False, date=None, dow_jones=None):
+def get_hash(east=False, date=None, dow_jones=None, is_simple=False):
     """Get the md5 hash.
 
     dow_jones can be a string or number. If it is None, then the current value
@@ -59,6 +59,8 @@ def get_hash(east=False, date=None, dow_jones=None):
     # Reformat
     dow_jones = str(dow_jones)
     date = date.strftime("%Y-%m-%d")
+    if is_simple is False:
+        print(f"DOW Jones Index on provided date {date}: {dow_jones}")
 
     return md5(date.encode() + b"-" + dow_jones.encode()).hexdigest()
 
@@ -74,7 +76,7 @@ def hash_to_location(u_lat, u_lon, md5_hash):
     return float(lat), float(lon)
 
 
-def geohash(lat, lon, date=None, dow_jones=None, east=None):
+def geohash(lat, lon, date=None, dow_jones=None, east=None, is_simple=False):
     """Get an xkcd geohash for the supplied position.
 
     This function is 30W compliant. If `east` is specified than this functionality
@@ -86,11 +88,11 @@ def geohash(lat, lon, date=None, dow_jones=None, east=None):
         if lon > -30:
             east = True
 
-    return hash_to_location(lat, lon, get_hash(east, date, dow_jones))
+    return hash_to_location(lat, lon, get_hash(east, date, dow_jones, is_simple))
 
 
-def globalhash(date=None, dow_jones=None):
-    lat, lon = geohash(0, 0, date, dow_jones, east=True)
+def globalhash(date=None, dow_jones=None, is_simple=False):
+    lat, lon = geohash(0, 0, date, dow_jones, east=True, is_simple=is_simple)
     lat = lat * 180 - 90
     lon = lon * 360 - 180
     return lat, lon
@@ -168,12 +170,12 @@ elif args["30w"] in ["w", "west"]:
     args["30w"] = False
 
 if args["global"]:
-    lat, lon = globalhash(args["date"], args["dow_jones"])
+    lat, lon = globalhash(args["date"], args["dow_jones"], args["simple"])
 else:
     if args["latitude"] is None or args["longitude"] is None:
         print("Latitude and longitude must be provided when not calculating the globalhash.")
         sys.exit(1)
-    lat, lon = geohash(args["latitude"], args["longitude"], args["date"], args["dow_jones"], args["30w"])
+    lat, lon = geohash(args["latitude"], args["longitude"], args["date"], args["dow_jones"], args["30w"], args["simple"])
 
 if args["centicule"]:
     # See https://geohashing.site/geohashing/Centicule
