@@ -104,7 +104,27 @@ def replace_tenths(dst, src):
     dst = str(dst)
     return float(dst.replace(f'.{old_tenths}', f'.{new_tenths}'))
 
-# TODO: Support finding in nearby graticules
+
+def check_find_nearby(args):
+    if args["near_lat_start"] or args["near_lat_stop"] or args["near_lon_start"] or args["near_lon_stop"]:
+        if args["near_lat_start"] is None:
+            args["near_lat_start"] = 0
+        if args["near_lat_stop"] is None:
+            args["near_lat_stop"] = 0
+
+        if args["near_lon_start"] is None:
+            args["near_lon_start"] = 0
+        if args["near_lon_stop"] is None:
+            args["near_lon_stop"] = 0
+
+        print("Graticules nearby:")
+        for lat_offset in range(args["near_lat_start"], args["near_lat_stop"] + 1):
+            for lon_offset in range(args["near_lon_start"], args["near_lon_stop"] + 1):
+                if lat_offset == 0 and lon_offset == 0:
+                    continue
+                print_fancy_output(lat + lat_offset, lon + lon_offset, args["browser"])
+
+
 def print_fancy_output(lat, lon, open_in_browser=None):
     print(f"Latitude:  {'' if lat < 0 else ' '}{lat}")  # Pad negative sign to be in line with longitude
     print(f"Longitude: {'' if lon < 0 else ' '}{lon}\n")
@@ -127,6 +147,10 @@ parser.add_argument("-g", "--global", action="store_true", help="Calculate the g
 parser.add_argument("-s", "--simple", action="store_true", help="Only return lat and lon, separated by a newline.")
 parser.add_argument("--centicule", action="store_true", help="Calculate the centicule instead.")
 parser.add_argument("-b", "--browser", choices=("g", "o"), default=None, help="Open in web browser. 'g' for Google Maps or 'o' for OpenStreetMaps.")
+parser.add_argument("--near-lat-start", type=int, help="Calculate the graticules starting from x graticules away from input latitude.")
+parser.add_argument("--near-lat-stop", type=int, help="Calculate the graticules ending at x graticules away from input latitude.")
+parser.add_argument("--near-lon-start", type=int, help="Calculate the graticules starting from x graticules away from input longitude.")
+parser.add_argument("--near-lon-stop", type=int, help="Calculate the graticules ending at x graticules away from input longitude.")
 parser.add_argument("--open-og-comic", action="store_true", help="Open XKCD #426 in web browser.")
 parser.add_argument("--open-geohashing-home", action="store_true", help="Open the homepage of Geohashing in web browser.")
 args = vars(parser.parse_args())
@@ -162,6 +186,7 @@ if args["simple"]:
 
 # Fancy output
 print_fancy_output(lat, lon, args["browser"])
+check_find_nearby(args)
 
 if args["open_og_comic"]:
     webbrowser.open("https://xkcd.com/426/")
