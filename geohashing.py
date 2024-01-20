@@ -25,7 +25,7 @@ def get_dow_jones(east=False, date=None):
         date = datetime.date.today()
     if east:  # Subtract a day to make this 30W compliant
         date += datetime.timedelta(days=-1)
-    
+
     date = date.strftime("%Y/%m/%d")
     for url in DOW_JONES_SOURCES:
         try:
@@ -84,9 +84,8 @@ def geohash(lat, lon, date=None, dow_jones=None, east=None):
         east = False
         if lon > -30:
             east = True
-    
-    return hash_to_location(lat, lon, get_hash(east, date, dow_jones))
 
+    return hash_to_location(lat, lon, get_hash(east, date, dow_jones))
 
 
 def globalhash(date=None, dow_jones=None):
@@ -94,6 +93,7 @@ def globalhash(date=None, dow_jones=None):
     lat = lat * 180 - 90
     lon = lon * 360 - 180
     return lat, lon
+
 
 def replace_tenths(dst, src):
     """Replace tenths place in dst with that from src"""
