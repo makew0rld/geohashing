@@ -107,17 +107,39 @@ def replace_tenths(dst, src):
     return float(dst.replace(f'.{old_tenths}', f'.{new_tenths}'))
 
 
-def check_find_nearby(args):
+def check_find_nearby(lat, lon, args):
     if args["near_lat_start"] or args["near_lat_stop"] or args["near_lon_start"] or args["near_lon_stop"]:
         if args["near_lat_start"] is None:
             args["near_lat_start"] = 0
+        else:
+            if not -90 <= lat - args["near_lat_start"] <= 90:
+                raise ValueError(f"Latitude graticule {lat} must lie between (-90, 90), "
+                                 f"but provided value 'near_lat_start' gives a start latitude of {lat - args['near_lat_start']}.")
         if args["near_lat_stop"] is None:
             args["near_lat_stop"] = 0
+        else:
+            if not -90 <= lat + args["near_lat_stop"] <= 90:
+                raise ValueError(f"Latitude graticule {lat} must lie between (-90, 90), "
+                                 f"but provided value 'near_lat_stop' gives an end latitude of {lat + args['near_lat_stop']}.")
+
+        if args["near_lat_start"] > args["near_lat_stop"]:
+            raise ValueError("Latitude start cannot be greater than stop.")
 
         if args["near_lon_start"] is None:
             args["near_lon_start"] = 0
+        else:
+            if not -180 <= lon - args["near_lon_start"] <= 180:
+                raise ValueError(f"Longitude graticule {lon} must lie between (-180, 180), "
+                                 f"but provided value 'near_lon_stop' gives a start longitude of {lon - args['near_lon_start']}.")
         if args["near_lon_stop"] is None:
             args["near_lon_stop"] = 0
+        else:
+            if not -180 <= lon + args["near_lon_stop"] <= 180:
+                raise ValueError(f"Longitude graticule {lon} must lie between (-180, 180), "
+                                 f"but provided value 'near_lon_stop' gives an end longitude of {lon + args['near_lon_stop']}.")
+
+        if args["near_lon_start"] > args["near_lon_stop"]:
+            raise ValueError("Longitude start cannot be greater than stop.")
 
         print("Graticules nearby:")
         for lat_offset in range(args["near_lat_start"], args["near_lat_stop"] + 1):
@@ -188,7 +210,7 @@ if args["simple"]:
 
 # Fancy output
 print_fancy_output(lat, lon, args["browser"])
-check_find_nearby(args)
+check_find_nearby(lat, lon, args)
 
 if args["open_og_comic"]:
     webbrowser.open("https://xkcd.com/426/")
