@@ -104,6 +104,17 @@ def replace_tenths(dst, src):
     return float(dst.replace(f'.{old_tenths}', f'.{new_tenths}'))
 
 # TODO: Support finding in nearby graticules
+def print_fancy_output(lat, lon, open_in_browser=None):
+    print(f"Latitude:  {'' if lat < 0 else ' '}{lat}")  # Pad negative sign to be in line with longitude
+    print(f"Longitude: {'' if lon < 0 else ' '}{lon}\n")
+
+    gmap_url = f"https://www.google.com/maps/search/?api=1&query={lat},{lon}"
+    osm_url = f"https://www.openstreetmap.org/?mlat={lat}&mlon={lon}&zoom=10"
+
+    print(f"Google Maps:\n\t{gmap_url}\nOpenStreetMap:\n\t{osm_url}\n")
+    if open_in_browser is not None:
+        webbrowser.open(gmap_url if open_in_browser == 'g' else osm_url)
+
 
 parser = argparse.ArgumentParser(description="Calculate geohashes as defined by Randall Munroe in xkcd #426.")
 parser.add_argument("--latitude", type=float, default=None)
@@ -114,6 +125,7 @@ parser.add_argument("--30w", choices=("e", "w", "east", "west"), help="Override 
 parser.add_argument("-g", "--global", action="store_true", help="Calculate the globalhash instead. Lat and lon are ignored.")
 parser.add_argument("-s", "--simple", action="store_true", help="Only return lat and lon, separated by a newline.")
 parser.add_argument("--centicule", action="store_true", help="Calculate the centicule instead.")
+parser.add_argument("-b", "--browser", choices=("g", "o"), default=None, help="Open in web browser. 'g' for Google Maps or 'o' for OpenStreetMaps.")
 args = vars(parser.parse_args())
 
 # Checks
@@ -146,16 +158,4 @@ if args["simple"]:
     sys.exit(0)
 
 # Fancy output
-if lat < 0:  # Pad negative sign
-    print("Latitude: ", lat)
-else:
-    print("Latitude:  ", lat)  # In line with longitude
-if lon < 0:
-    print("Longitude:", lon)
-else:
-    print("Longitude: ", lon)
-print()
-print("Google Maps:")
-print("\t" + "https://www.google.com/maps/search/?api=1&query=" + str(lat) + "," + str(lon))
-print("OpenStreetMap:")
-print("\t" + "https://www.openstreetmap.org/?mlat=" + str(lat) + "&mlon=" + str(lon) + "&zoom=10")
+print_fancy_output(lat, lon, args["browser"])
