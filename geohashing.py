@@ -118,8 +118,8 @@ def print_fancy_output(lat, lon, open_in_browser=None):
 
 
 parser = argparse.ArgumentParser(description="Calculate geohashes as defined by Randall Munroe in xkcd #426.")
-parser.add_argument("--latitude", type=float, default=None)
-parser.add_argument("--longitude", type=float, default=None)
+parser.add_argument("latitude", type=float, nargs='?', default=None, help="The latitude of your location (just the integer part is enough for graticule).")
+parser.add_argument("longitude", type=float, nargs='?', default=None, help="The longitude of your location (just the integer part is enough for graticule).")
 parser.add_argument("-d", "--date", help="The geohash date in YYYY-MM-DD format. The current date is used otherwise.")
 parser.add_argument("-j", "--dow-jones", "--dj", type=float, help="The Dow Jones value, with two decimal places. The most recent compilant open value is used otherwise")
 parser.add_argument("--30w", choices=("e", "w", "east", "west"), help="Override automatic 30W detection, forcing either east or west.")
