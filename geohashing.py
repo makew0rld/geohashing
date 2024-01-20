@@ -8,8 +8,10 @@ import argparse
 
 # Websites that return the Dow Jones index in plain text
 # The date can be appended to the URL in this format: %Y/%m/%d
-DOW_JONES_SOURCES = ["http://geo.crox.net/djia/", "http://www1.geo.crox.net/djia/",
-                     "http://www2.geo.crox.net/djia/", "http://carabiner.peeron.com/xkcd/map/data/"]
+DOW_JONES_SOURCES = ["https://data.geohashing.info/dow/", "http://geo.crox.net/djia/",
+                     "http://www1.geo.crox.net/djia/", "http://www2.geo.crox.net/djia/",
+                     "http://carabiner.peeron.com/xkcd/map/data/",
+                     ]
 
 
 def get_dow_jones(east=False, date=None):
