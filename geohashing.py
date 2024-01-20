@@ -106,8 +106,8 @@ def replace_tenths(dst, src):
 # TODO: Support finding in nearby graticules
 
 parser = argparse.ArgumentParser(description="Calculate geohashes as defined by Randall Munroe in xkcd #426.")
-parser.add_argument("latitude", type=float)
-parser.add_argument("longitude", type=float)
+parser.add_argument("--latitude", type=float, default=None)
+parser.add_argument("--longitude", type=float, default=None)
 parser.add_argument("-d", "--date", help="The geohash date in YYYY-MM-DD format. The current date is used otherwise.")
 parser.add_argument("-j", "--dow-jones", "--dj", type=float, help="The Dow Jones value, with two decimal places. The most recent compilant open value is used otherwise")
 parser.add_argument("--30w", choices=("e", "w", "east", "west"), help="Override automatic 30W detection, forcing either east or west.")
@@ -131,6 +131,9 @@ elif args["30w"] in ["w", "west"]:
 if args["global"]:
     lat, lon = globalhash(args["date"], args["dow_jones"])
 else:
+    if args["latitude"] is None or args["longitude"] is None:
+        print("Latitude and longitude must be provided when not calculating the globalhash.")
+        sys.exit(1)
     lat, lon = geohash(args["latitude"], args["longitude"], args["date"], args["dow_jones"], args["30w"])
 
 if args["centicule"]:
