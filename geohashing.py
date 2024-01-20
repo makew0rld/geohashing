@@ -126,6 +126,8 @@ parser.add_argument("-g", "--global", action="store_true", help="Calculate the g
 parser.add_argument("-s", "--simple", action="store_true", help="Only return lat and lon, separated by a newline.")
 parser.add_argument("--centicule", action="store_true", help="Calculate the centicule instead.")
 parser.add_argument("-b", "--browser", choices=("g", "o"), default=None, help="Open in web browser. 'g' for Google Maps or 'o' for OpenStreetMaps.")
+parser.add_argument("--open-og-comic", action="store_true", help="Open XKCD #426 in web browser.")
+parser.add_argument("--open-geohashing-home", action="store_true", help="Open the homepage of Geohashing in web browser.")
 args = vars(parser.parse_args())
 
 # Checks
@@ -159,3 +161,8 @@ if args["simple"]:
 
 # Fancy output
 print_fancy_output(lat, lon, args["browser"])
+
+if args["open_og_comic"]:
+    webbrowser.open("https://xkcd.com/426/")
+if args["open_geohashing_home"]:
+    webbrowser.open("https://geohashing.site/")
